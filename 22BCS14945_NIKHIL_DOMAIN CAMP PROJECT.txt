@@ -1,0 +1,80 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+class OrganicWaste {
+public:
+    std::string type;
+    double quantity; // in kilograms
+
+    OrganicWaste(std::string t, double q) : type(t), quantity(q) {}
+};
+
+class Fertilizer {
+public:
+    std::string name;
+    double quantity; // in kilograms
+
+    Fertilizer(std::string n, double q) : name(n), quantity(q) {}
+};
+
+class ProductionPlant {
+private:
+    std::vector<OrganicWaste> wasteInput;
+    std::vector<Fertilizer> fertilizerOutput;
+
+public:
+    void addOrganicWaste(const OrganicWaste& waste) {
+        wasteInput.push_back(waste);
+    }
+
+    void processWaste() {
+        double totalWaste = 0;
+        for (const auto& waste : wasteInput) {
+            totalWaste += waste.quantity;
+        }
+
+        // Example production logic: 1 kg of organic waste yields 0.2 kg of fertilizer
+        double fertilizerProduced = totalWaste * 0.2;
+        fertilizerOutput.push_back(Fertilizer("EcoFertilizer", fertilizerProduced));
+
+        std::cout << "Processed " << totalWaste << " kg of organic waste to produce " 
+                  << fertilizerProduced << " kg of fertilizer." << std::endl;
+    }
+
+    void reportFertilizerOutput() {
+        for (const auto& fertilizer : fertilizerOutput) {
+            std::cout << "Fertilizer: " << fertilizer.name << ", Quantity: " << fertilizer.quantity << " kg" << std::endl;
+        }
+    }
+};
+
+int main() {
+    ProductionPlant plant;
+    int numberOfWasteInputs;
+
+    std::cout << "Enter the number of different types of organic waste: ";
+    std::cin >> numberOfWasteInputs;
+
+    for (int i = 0; i < numberOfWasteInputs; ++i) {
+        std::string wasteType;
+        double wasteQuantity;
+
+        std::cout << "Enter type of organic waste (e.g., Food Waste, Yard Waste): ";
+        std::cin >> std::ws; // To consume any leading whitespace
+        std::getline(std::cin, wasteType); // Get the whole line for waste type
+
+        std::cout << "Enter quantity in kg: ";
+        std::cin >> wasteQuantity;
+
+        plant.addOrganicWaste(OrganicWaste(wasteType, wasteQuantity));
+    }
+
+    // Processing waste
+    plant.processWaste();
+    
+    // Reporting output
+    plant.reportFertilizerOutput();
+
+    return 0;
+}
